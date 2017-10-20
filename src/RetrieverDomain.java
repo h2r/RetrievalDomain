@@ -121,14 +121,22 @@ public class RetrieverDomain implements DomainGenerator {
 	@Override
 	protected boolean applicableInState(State state, ObjectParameterizedAction action) {
 	  RetrieverState s = (RetrieverState) state;
-	
-	  // TODO GET PARAMETR FOR CUP NAME FROM ACTION THEN CHECK IF CUP IN SHELF
-	  if (s.agent.curDirection.equals(ACTION_NORTH) || s.agent.curDirection.equals(ACTION_SOUTH) ||
-		  s.agent.curDirection.equals(ACTION_EAST) || s.agent.curDirection.equals(ACTION_WEST)) {
-		int[] offset = getOffset(s.agent.curDirection);
-		return (s.isShelf(s.agent.x + offset[0], s.agent.y + offset[1]));
+		
+	  String object = action.getObjectParameters()[0]; // The object name
+	  
+//	  if (s.agent.curDirection.equals(ACTION_NORTH) || s.agent.curDirection.equals(ACTION_SOUTH) ||
+//		  s.agent.curDirection.equals(ACTION_EAST) || s.agent.curDirection.equals(ACTION_WEST)) {
+//		int[] offset = getOffset(s.agent.curDirection);
+//		return (s.isShelf(s.agent.x + offset[0], s.agent.y + offset[1]));
+//	  }
+//	  throw new RuntimeException("Something went wrong in PickActionType.");
+	  int[] offset = getOffset(s.agent.curDirection);
+	  Shelf shelf = s.whichShelf(s.agent.x + offset[0], s.agent.y + offset[1]);
+	  if (shelf == null) {
+	    return false;
 	  }
-	  throw new RuntimeException("Something went wrong in PickActionType.");
+	  
+	  return shelf.keysToObjects.contains(object);
 	}
 
 	

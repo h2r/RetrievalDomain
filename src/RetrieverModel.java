@@ -93,6 +93,7 @@ public class RetrieverModel implements FullStateModel {
 	
 	
 	if (action.actionName().equals(ACTION_PICK)) {
+	  // TODO FIX THIS BY GETTING THE OBJECT NAME FROM THE ACITON.  AND TRADING IT WITH THE SHELVES.
 	  PickObjectParameterizedAction a = (PickObjectParameterizedAction) action;
 	  int[] offset = getOffset(s.agent.curDirection);
 	  int newX = s.agent.x + offset[0];
