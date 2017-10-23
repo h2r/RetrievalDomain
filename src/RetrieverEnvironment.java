@@ -16,7 +16,7 @@ import static retriever.src.RetrievableObject.NOT_PRESENT;
 public class RetrieverEnvironment extends SimulatedEnvironment {
   
   // Mapping from names of shelves to names of the objects they contain
-  Map<String, List<String>> shelfMap = new HashMap<>();
+  private Map<String, List<String>> shelfMap = new HashMap<>();
   
   public RetrieverEnvironment(OOSADomain domain, State initialState) {
 	super(domain, initialState);

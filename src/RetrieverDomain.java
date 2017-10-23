@@ -8,9 +8,7 @@ import burlap.behavior.singleagent.auxiliary.EpisodeSequenceVisualizer;
 import burlap.behavior.singleagent.planning.stochastic.rtdp.BoundedRTDP;
 import burlap.behavior.valuefunction.ConstantValueFunction;
 import burlap.mdp.auxiliary.DomainGenerator;
-import burlap.mdp.core.Domain;
 import burlap.mdp.core.TerminalFunction;
-import burlap.mdp.core.action.Action;
 import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.SADomain;
@@ -22,7 +20,6 @@ import burlap.shell.visual.VisualExplorer;
 import burlap.statehashing.simple.SimpleHashableStateFactory;
 import burlap.visualizer.Visualizer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -220,7 +217,10 @@ public class RetrieverDomain implements DomainGenerator {
   }
   
   public static void main(String[] args) {
-	RetrieverDomain domain = new RetrieverDomain();
+//	RetrieverDomain domain = new RetrieverDomain();
+	String goalRoom = "room2";
+	RetrieverDomain domain = new RetrieverDomain(new RetrieverRoomRF(goalRoom), new RetrieverRoomTF
+			(goalRoom));
 	OOSADomain d = domain.generateDomain();
 	List<Room> rooms = Arrays.asList(
 						       new Room("room1", 6, 11, 10, 0, "red"),

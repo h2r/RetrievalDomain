@@ -2,6 +2,7 @@ package retriever.src;
 
 import burlap.mdp.core.StateTransitionProb;
 import burlap.mdp.core.action.Action;
+import burlap.mdp.core.oo.ObjectParameterizedAction;
 import burlap.mdp.core.state.State;
 import burlap.mdp.singleagent.model.statemodel.FullStateModel;
 
@@ -76,7 +77,7 @@ public class RetrieverModel implements FullStateModel {
 		for (String key : shelf.keysToObjects) {
 		  for (RetrievableObject object : s.objects) {
 			if (key.equals(object.name())) {
-			  System.out.print(object.name + " present?: " + object.present + '\n');
+//			  System.out.print(object.name + " present?: " + object.present + '\n');
 			  object.present = PRESENT;
 			  
 			}
@@ -90,47 +91,82 @@ public class RetrieverModel implements FullStateModel {
 	  
 	  
 	}
-	
-	
+ 
 	if (action.actionName().equals(ACTION_PICK)) {
-	  // TODO FIX THIS BY GETTING THE OBJECT NAME FROM THE ACITON.  AND TRADING IT WITH THE SHELVES.
-	  PickObjectParameterizedAction a = (PickObjectParameterizedAction) action;
+	  ObjectParameterizedAction a = (ObjectParameterizedAction) action;
+	  String objectToGet = a.getObjectParameters()[0];
 	  int[] offset = getOffset(s.agent.curDirection);
-	  int newX = s.agent.x + offset[0];
-	  int newY = s.agent.y + offset[1];
-	  Shelf foundShelf = s.whichShelf(newX, newY);
-	  if (foundShelf != null) {
-		List<String> newAgentObjs = new ArrayList<>();
-		newAgentObjs.addAll(s.agent.objectsInPocket);
-		List<String> newShelfObjs = new ArrayList<>();
-		// NOTE POTENTIAL BUG: IF THE AGENT STARTS FACING A SHELF, THOSE OBJECTS WILL NOT BE
-		// MARKED AS PRESENT
-		for (String objectName : a.objectsToPick) {
-		  for (String objects : foundShelf.keysToObjects) {
-			if (objectName.equals(objects)) {
-			  newAgentObjs.add(objectName);
-			} else {
-			  newShelfObjs.add(objectName);
-			}
-		  }
+	  Shelf shelf = s.whichShelf(s.agent.x + offset[0], s.agent.y + offset[1]);
+	  
+	  // Making a new list of shelf objects.
+	  List<String> newShelfObjs = new ArrayList<>();
+	  for (String objectInShelf : shelf.keysToObjects) {
+		if (!objectInShelf.equals(objectInShelf)) {
+		  newShelfObjs.add(objectInShelf);
 		}
-		List<Shelf> newShelfList = new ArrayList<>();
-		for (Shelf shelf : s.shelves) {
-		  if (shelf.name().equals(foundShelf.name())) {
-			Shelf newShelf = new Shelf(shelf.name(), shelf.x, shelf.y, newShelfObjs);
-			newShelfList.add(newShelf);
-		  } else {
-			newShelfList.add(shelf);
-		  }
-		  
-		}
-		return new RetrieverState(new RetrieverAgent(s.agent.name, s.agent.x, s.agent.y, s.agent
-				.curDirection, newAgentObjs, s.agent.imDone), s.doors, s.rooms, s.serviceDesk,
-								  newShelfList, s.objects);
-	  } else {
-		return s.copy();
 	  }
+	  List<Shelf> newShelves = new ArrayList<>();
+	  for (Shelf shelf1 : s.shelves) {
+		if (!shelf.name().equals(shelf1.name())) {
+		  newShelves.add(shelf1);
+		}
+	  }
+	  newShelves.add(shelf);
+	  
+	  
+	  // Making a new list of agent objects.
+	  List<String> newAgentObjs = new ArrayList<>();
+	  for (String agentObject : s.agent.objectsInPocket) {
+		newAgentObjs.add(agentObject);
+	  }
+	  newAgentObjs.add(objectToGet);
+	  
+	  return new RetrieverState(new RetrieverAgent(s.agent.name(), s.agent.x, s.agent.y, s.agent
+			  .curDirection, newAgentObjs, s.agent.imDone), s.doors, s.rooms, s.serviceDesk,
+								newShelves, s.objects);
+	  
 	}
+	
+//	if (action.actionName().equals(ACTION_PICK)) {
+//	  // TODO FIX THIS BY GETTING THE OBJECT NAME FROM THE ACITON.  AND TRADING IT WITH THE SHELVES.
+////	  PickObjectParameterizedAction a = (PickObjectParameterizedAction) action;
+//
+//	  int[] offset = getOffset(s.agent.curDirection);
+//	  int newX = s.agent.x + offset[0];
+//	  int newY = s.agent.y + offset[1];
+//	  Shelf foundShelf = s.whichShelf(newX, newY);
+//	  if (foundShelf != null) {
+//		List<String> newAgentObjs = new ArrayList<>();
+//		newAgentObjs.addAll(s.agent.objectsInPocket);
+//		List<String> newShelfObjs = new ArrayList<>();
+//		// NOTE POTENTIAL BUG: IF THE AGENT STARTS FACING A SHELF, THOSE OBJECTS WILL NOT BE
+//		// MARKED AS PRESENT
+//		for (String objectName : a.objectsToPick) {
+//		  for (String objects : foundShelf.keysToObjects) {
+//			if (objectName.equals(objects)) {
+//			  newAgentObjs.add(objectName);
+//			} else {
+//			  newShelfObjs.add(objectName);
+//			}
+//		  }
+//		}
+//		List<Shelf> newShelfList = new ArrayList<>();
+//		for (Shelf shelf : s.shelves) {
+//		  if (shelf.name().equals(foundShelf.name())) {
+//			Shelf newShelf = new Shelf(shelf.name(), shelf.x, shelf.y, newShelfObjs);
+//			newShelfList.add(newShelf);
+//		  } else {
+//			newShelfList.add(shelf);
+//		  }
+//
+//		}
+//		return new RetrieverState(new RetrieverAgent(s.agent.name, s.agent.x, s.agent.y, s.agent
+//				.curDirection, newAgentObjs, s.agent.imDone), s.doors, s.rooms, s.serviceDesk,
+//								  newShelfList, s.objects);
+//	  } else {
+//		return s.copy();
+//	  }
+//	}
  
 //	if (action.actionName().equals(ACTION_PICK)) {
 	if (action.actionName().equals(ACTION_DONE)) {
