@@ -7,12 +7,14 @@ import burlap.visualizer.ObjectPainter;
 import burlap.visualizer.StateRenderLayer;
 import burlap.visualizer.Visualizer;
 
+import javax.swing.plaf.basic.BasicTextUI;
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
 
 import static retriever.src.RetrieverDomain.*;
+import static retriever.src.RetrieverState.getOffset;
 
 public class RetrieverVisualizer {
   
@@ -274,8 +276,26 @@ public class RetrieverVisualizer {
 	  float width = (1.0f / domainXScale) * cWidth;
 	  float height = (1.0f / domainYScale) * cHeight;
 	  
+//	  System.out.print("Objects in pocket:\n");
+	  g2.drawString("Objects in pocket:\n", 5, 15);
+	  if (ob.objectsInPocket.isEmpty()) {
+//	   System.out.print("None\n");
+		g2.drawString("None\n", 5, 30);
+	  } else {
+		int i = 1;
+		for (String object : ob.objectsInPocket) {
+//		  System.out.print(Integer.toString(i) + ".\t" + object + '\n');
+		  g2.drawString(Integer.toString(i) + ".\t" + object + '\n', 10, 15 + 15 * i);
+		  i++;
+		}
+	  }
+	  
 	  g2.setColor(Color.darkGray);
 	  g2.fill(new Rectangle2D.Float(ob.x * width, cHeight - height - ob.y * height, width, height));
+	  
+//	  int[] offset = getOffset(ob.curDirection);
+	  g2.setColor(Color.black);
+	  g2.drawString(ob.curDirection, ob.x * width, cHeight - height - ob.y * height);
 	  
 	}
   }

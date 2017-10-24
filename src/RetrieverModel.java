@@ -77,7 +77,7 @@ public class RetrieverModel implements FullStateModel {
 		for (String key : shelf.keysToObjects) {
 		  for (RetrievableObject object : s.objects) {
 			if (key.equals(object.name())) {
-//			  System.out.print(object.name + " present?: " + object.present + '\n');
+			  System.out.print(object.name + " present?: " + object.present + '\n');
 			  object.present = PRESENT;
 			  
 			}
@@ -120,6 +120,8 @@ public class RetrieverModel implements FullStateModel {
 		newAgentObjs.add(agentObject);
 	  }
 	  newAgentObjs.add(objectToGet);
+	  
+	  System.out.print("You picked up: " + objectToGet + '\n');
 	  
 	  return new RetrieverState(new RetrieverAgent(s.agent.name(), s.agent.x, s.agent.y, s.agent
 			  .curDirection, newAgentObjs, s.agent.imDone), s.doors, s.rooms, s.serviceDesk,
@@ -170,6 +172,7 @@ public class RetrieverModel implements FullStateModel {
  
 //	if (action.actionName().equals(ACTION_PICK)) {
 	if (action.actionName().equals(ACTION_DONE)) {
+	  System.out.print("Action done called.\n");
 	  // Done action type checks if valid.
 	  return new RetrieverState(new RetrieverAgent(s.agent.name(), s.agent.x, s.agent.y, s.agent
 			  .curDirection, s.agent.objectsInPocket, true), s.doors, s.rooms, s.serviceDesk, s
