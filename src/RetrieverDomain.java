@@ -217,10 +217,10 @@ public class RetrieverDomain implements DomainGenerator {
   }
   
   public static void main(String[] args) {
-	RetrieverDomain domain = new RetrieverDomain();
+//	RetrieverDomain domain = new RetrieverDomain();
 	String goalRoom = "room2";
-//	RetrieverDomain domain = new RetrieverDomain(new RetrieverRoomRF(goalRoom), new RetrieverRoomTF
-//			(goalRoom));
+	RetrieverDomain domain = new RetrieverDomain(new RetrieverRoomRF(goalRoom), new RetrieverRoomTF
+			(goalRoom));
 	OOSADomain d = domain.generateDomain();
 	List<Room> rooms = Arrays.asList(
 						       new Room("room1", 6, 11, 10, 0, "red"),
@@ -242,31 +242,33 @@ public class RetrieverDomain implements DomainGenerator {
  
 //	Visualizer v = RetrieverVisualizer.getVisualizer(10, 11);
 	Visualizer v = RetrieverVisualizer.getVisualizer(11, 12);
+//
+//	VisualExplorer exp = new VisualExplorer((SADomain) d, v, s);
+//
 	
-	VisualExplorer exp = new VisualExplorer((SADomain) d, v, s);
- 
 	RetrieverEnvironment env = new RetrieverEnvironment(d, s);
+	//TODO: add things to shelves in the the environment
+	ConstantValueFunction heuristic = new ConstantValueFunction(1.);
+	BoundedRTDP brtp = new BoundedRTDP(d, 0.99, new SimpleHashableStateFactory(false),
+									   new ConstantValueFunction(0.0), heuristic, 0.01, 1);
+	brtp.setMaxRolloutDepth(2);
+	brtp.toggleDebugPrinting(false);
+	Policy p = brtp.planFromState(s);
+
+
+	Episode ea = PolicyUtils.rollout(p, env, 1);
+	System.out.println("here");
+	new EpisodeSequenceVisualizer(v, d, Arrays.asList(ea));
 	
-//	ConstantValueFunction heuristic = new ConstantValueFunction(1.);
-//	BoundedRTDP brtp = new BoundedRTDP(d, 0.99, new SimpleHashableStateFactory(false),
-//									   new ConstantValueFunction(0.0), heuristic, 0.01, 500);
-//	brtp.setMaxRolloutDepth(50);
-//	brtp.toggleDebugPrinting(false);
-//	Policy p = brtp.planFromState(s);
+//	exp.addKeyAction("s", ACTION_NORTH, "");
+//	exp.addKeyAction("a", ACTION_WEST, "");
+//	exp.addKeyAction("w", ACTION_SOUTH, "");
+//	exp.addKeyAction("d", ACTION_EAST, "");
+//	exp.addKeyAction("p", ACTION_PICK, "bucket");
+//	exp.addKeyAction("o", ACTION_PICK, "book");
+//	exp.addKeyAction("l", ACTION_DONE, "");
 //
-//
-//	Episode ea = PolicyUtils.rollout(p, env, 100);
-//	new EpisodeSequenceVisualizer(v, d, Arrays.asList(ea));
-	
-	exp.addKeyAction("s", ACTION_NORTH, "");
-	exp.addKeyAction("a", ACTION_WEST, "");
-	exp.addKeyAction("w", ACTION_SOUTH, "");
-	exp.addKeyAction("d", ACTION_EAST, "");
-	exp.addKeyAction("p", ACTION_PICK, "bucket");
-	exp.addKeyAction("o", ACTION_PICK, "book");
-	exp.addKeyAction("l", ACTION_DONE, "");
- 
-	exp.initGUI();
+//	exp.initGUI();
   }
   
   

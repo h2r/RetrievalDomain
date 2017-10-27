@@ -50,6 +50,8 @@ public class RetrieverEnvironment extends SimulatedEnvironment {
   }
   
   private boolean checkObjects(RetrieverState curState) {
+    //TODO: if not next to a shelf don't do anything return false!
+	//
 	Set<String> keys = this.shelfMap.keySet();
 	int outerCounter = 0;
 	for (String key : keys) {
